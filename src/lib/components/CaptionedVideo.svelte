@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Caption, type SerializedCaption } from '$lib/utils/captions';
+	import CaptionTimestamp from './CaptionTimestamp.svelte';
 
 	export let videoSrc: string;
 	export let captions: SerializedCaption[];
@@ -11,6 +12,7 @@
 	let paused: boolean;
 	let ended: boolean;
 	let volume: number;
+	let duration: number;
 
 	const _captions = Caption.deserializeCaptions(captions);
 
@@ -25,7 +27,7 @@
 
 <div class="video-container">
 	<video
-		id="videoPlayer"
+		id="video-player"
 		{hidden}
 		controls
 		src={videoSrc}
@@ -34,6 +36,7 @@
 		bind:paused
 		bind:ended
 		bind:volume
+		bind:duration
 	>
 		<track kind="captions" />
 	</video>
@@ -44,9 +47,12 @@
 		</span>
 		{#if !_captions.length}
 			<p>No captions available</p>
-		{:else}
+		{:else if duration}
 			{#each _captions as caption}
-				<div class="caption">{caption.text}</div>
+				<div class="caption">
+					<CaptionTimestamp {caption} video_duration={duration} />
+					{caption.text}
+				</div>
 			{/each}
 		{/if}
 	</div>
@@ -57,7 +63,7 @@
 		display: flex;
 	}
 
-	#videoPlayer {
+	#video-player {
 		width: calc(70% - 20px);
 		margin: 10px;
 		border-radius: 10px;
