@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Caption, type SerializedCaption } from '$lib/utils/captions';
 	import CaptionTimestamp from './CaptionTimestamp.svelte';
+	import { Video } from '$lib/utils/video';
 
 	export let videoSrc: string;
 	export let captions: SerializedCaption[];
@@ -14,8 +15,8 @@
 	let volume: number;
 	let duration: number;
 
-	const _captions = Caption.deserializeCaptions(captions);
-
+	// let vid = new Video(videoSrc, Caption.deserializeCaptions(captions));
+	let _captions = Caption.deserializeCaptions(captions);
 	onMount(() => {
 		const track = video.addTextTrack('captions', 'Captions', 'en');
 		track.mode = 'showing';
@@ -48,9 +49,9 @@
 		{#if !_captions.length}
 			<p>No captions available</p>
 		{:else if duration}
-			{#each _captions as caption}
+			{#each _captions as caption, idx}
 				<div class="caption">
-					<CaptionTimestamp {caption} video_duration={duration} />
+					<CaptionTimestamp {caption} video_duration={duration} bind:captions={_captions} {idx} />
 					{caption.text}
 				</div>
 			{/each}
