@@ -34,7 +34,9 @@
         bind:paused
         bind:ended
         bind:volume
-    />
+    >
+    <track kind="captions"/>
+  </video>
     <div class="captions-container">
         <span>      
             <button>Undo</button> <button>Redo</button>
