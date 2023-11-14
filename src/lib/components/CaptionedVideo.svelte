@@ -56,10 +56,15 @@
 		{#if !vid.captions.length}
 			<p>No captions available</p>
 		{:else if vid.duration}
-			{#each vid.captions as caption, idx}
+			{#each vid.captions as _, idx}
 				<div class="caption">
-					<CaptionTimestamp {caption} bind:vid {idx} />
-					{caption.text}
+					<CaptionTimestamp
+						bind:vid
+						{idx}
+						prevCaption={idx == 0 ? undefined : vid.captions[idx - 1]}
+						nextCaption={idx == vid.captions.length - 1 ? undefined : vid.captions[idx + 1]}
+					/>
+					{vid.captions[idx].text}
 				</div>
 			{/each}
 		{/if}

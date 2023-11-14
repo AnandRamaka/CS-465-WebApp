@@ -1,38 +1,40 @@
 <script lang="ts">
 	import type { Caption } from '$lib/utils/captions';
 	import type { Video } from '$lib/utils/video';
-	import { onMount } from 'svelte';
 	import RangeSlider from 'svelte-range-slider-pips';
 
-	export let caption: Caption;
 	export let vid: Video;
 	export let idx: number;
+	export let prevCaption: Caption | undefined;
+	export let nextCaption: Caption | undefined;
 
+	let caption = vid.captions[idx];
+	let lower_bound = prevCaption?.endTime ?? 0;
+	let upper_bound = nextCaption?.startTime ?? vid.duration;
 	let range = [caption.startTime, caption.endTime];
-	// TODO: probably want this to be up until the previous & next captions
-	const range_err = (vid.duration ?? 0) / 10;
 
 	const saveRange = () => {
-		caption.startTime = range[0];
-		caption.endTime = range[1];
-		vid.captions[idx] = caption;
+		vid.captions[idx].startTime = range[0];
+		vid.captions[idx].endTime = range[1];
 	};
+
+	const formatTime = (seconds: number) => {
+		return new Date(seconds * 1000).toISOString().substring(11, 19);
+	};
+
+	$: {
+		lower_bound = prevCaption?.endTime ?? 0;
+		upper_bound = nextCaption?.startTime ?? vid.duration;
+	}
 </script>
 
 <div>
-	<RangeSlider
-		min={Math.max(0, caption.startTime - range_err)}
-		max={Math.min(vid.duration ?? 0, caption.endTime + range_err)}
-		step={3}
-		bind:values={range}
-		range
-		pips
-	/>
+	<RangeSlider min={lower_bound} max={upper_bound} step={3} bind:values={range} range pips />
 	<div id="label-container">
-		<div>{range[0]}</div>
-		<div>{range[1]}</div>
+		<div>{formatTime(range[0])}</div>
+		<button on:click={saveRange}> Save </button>
+		<div>{formatTime(range[1])}</div>
 	</div>
-	<button on:click={saveRange}> Save </button>
 </div>
 
 <style>
