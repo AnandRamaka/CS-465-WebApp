@@ -19,6 +19,7 @@
 	// Captions within the video object --> send the final Video object into
 	// some function that writes the new captions to a file
 	let vid = new Video(videoSrc, Caption.deserializeCaptions(captions));
+	let idxEditing: number | undefined = undefined;
 
 	onMount(() => {
 		const track = video.addTextTrack('captions', 'Captions', 'en');
@@ -27,6 +28,10 @@
 			track.addCue(caption.vttCue);
 		}
 	});
+
+	const setIdxEditing = (idx: number) => {
+		idxEditing = idx;
+	};
 
 	$: {
 		console.log('captions changed', vid.captions);
@@ -49,7 +54,7 @@
 		<track kind="captions" />
 	</video>
 	<div class="captions-container">
-		<span>
+		<span class="toolbar">
 			<button>Undo</button> <button>Redo</button>
 			<button> Show Original </button>
 		</span>
@@ -57,15 +62,17 @@
 			<p>No captions available</p>
 		{:else if vid.duration}
 			{#each vid.captions as _, idx}
-				<div class="caption">
-					<CaptionTimestamp
-						bind:vid
-						{idx}
-						prevCaption={idx == 0 ? undefined : vid.captions[idx - 1]}
-						nextCaption={idx == vid.captions.length - 1 ? undefined : vid.captions[idx + 1]}
-					/>
+				<button class="caption" on:click={() => setIdxEditing(idx)}>
+					{#if idxEditing == idx}
+						<CaptionTimestamp
+							bind:vid
+							{idx}
+							prevCaption={idx == 0 ? undefined : vid.captions[idx - 1]}
+							nextCaption={idx == vid.captions.length - 1 ? undefined : vid.captions[idx + 1]}
+						/>
+					{/if}
 					{vid.captions[idx].text}
-				</div>
+				</button>
 			{/each}
 		{/if}
 	</div>
@@ -74,6 +81,11 @@
 <style>
 	.video-container {
 		display: flex;
+	}
+
+	.toolbar {
+		display: block;
+		margin-bottom: 10px;
 	}
 
 	#video-player {
@@ -93,5 +105,6 @@
 
 	.caption {
 		margin-bottom: 10px;
+		cursor: pointer;
 	}
 </style>

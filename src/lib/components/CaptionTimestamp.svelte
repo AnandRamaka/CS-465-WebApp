@@ -29,10 +29,11 @@
 </script>
 
 <div>
-	<RangeSlider min={lower_bound} max={upper_bound} step={3} bind:values={range} range pips />
+	<RangeSlider min={lower_bound} max={upper_bound} step={1} bind:values={range} range pips />
 	<div id="label-container">
 		<div>{formatTime(range[0])}</div>
-		<button on:click={saveRange}> Save </button>
+		<!-- TODO: should also save edited caption text -->
+		<button on:click={saveRange} id="save-button"> Save </button>
 		<div>{formatTime(range[1])}</div>
 	</div>
 </div>
@@ -41,5 +42,10 @@
 	#label-container {
 		display: flex;
 		justify-content: space-between;
+		margin-bottom: 10px;
+	}
+
+	#save-button {
+		cursor: pointer;
 	}
 </style>
