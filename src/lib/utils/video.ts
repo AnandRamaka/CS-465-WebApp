@@ -2,6 +2,7 @@ import type { Caption } from "./captions";
 
 export class Video {
   private _src: string;
+  private _duration: number | undefined;
   private _captions: Caption[];
 
   public constructor(src: string, captions: Caption[]) {
@@ -15,6 +16,14 @@ export class Video {
 
   set src(value: string) {
     this._src = value;
+  }
+
+  get duration(): number | undefined {
+    return this._duration;
+  }
+  
+  set duration(value: number) {
+    this._duration = value;
   }
 
   get captions(): Caption[] {

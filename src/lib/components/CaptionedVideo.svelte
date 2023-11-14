@@ -13,17 +13,24 @@
 	let paused: boolean;
 	let ended: boolean;
 	let volume: number;
-	let duration: number;
 
-	// let vid = new Video(videoSrc, Caption.deserializeCaptions(captions));
-	let _captions = Caption.deserializeCaptions(captions);
+	// Use the video src & captions to create a Video object that contains
+	// useful metadata for editing individual caption timestamps --> edit the
+	// Captions within the video object --> send the final Video object into
+	// some function that writes the new captions to a file
+	let vid = new Video(videoSrc, Caption.deserializeCaptions(captions));
+
 	onMount(() => {
 		const track = video.addTextTrack('captions', 'Captions', 'en');
 		track.mode = 'showing';
-		for (const caption of _captions) {
+		for (const caption of vid.captions) {
 			track.addCue(caption.vttCue);
 		}
 	});
+
+	$: {
+		console.log('captions changed', vid.captions);
+	}
 </script>
 
 <div class="video-container">
@@ -37,7 +44,7 @@
 		bind:paused
 		bind:ended
 		bind:volume
-		bind:duration
+		bind:duration={vid.duration}
 	>
 		<track kind="captions" />
 	</video>
@@ -46,12 +53,12 @@
 			<button>Undo</button> <button>Redo</button>
 			<button> Show Original </button>
 		</span>
-		{#if !_captions.length}
+		{#if !vid.captions.length}
 			<p>No captions available</p>
-		{:else if duration}
-			{#each _captions as caption, idx}
+		{:else if vid.duration}
+			{#each vid.captions as caption, idx}
 				<div class="caption">
-					<CaptionTimestamp {caption} video_duration={duration} bind:captions={_captions} {idx} />
+					<CaptionTimestamp {caption} bind:vid {idx} />
 					{caption.text}
 				</div>
 			{/each}

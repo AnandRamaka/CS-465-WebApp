@@ -5,26 +5,24 @@
 	import RangeSlider from 'svelte-range-slider-pips';
 
 	export let caption: Caption;
-	export let video_duration: number;
-	// export let vid: Video;
+	export let vid: Video;
 	export let idx: number;
-	export let captions: Caption[];
 
 	let range = [caption.startTime, caption.endTime];
 	// TODO: probably want this to be up until the previous & next captions
-	const range_err = video_duration / 10;
+	const range_err = (vid.duration ?? 0) / 10;
 
-	$: {
+	const saveRange = () => {
 		caption.startTime = range[0];
 		caption.endTime = range[1];
-		// captions[idx] = caption;
-	}
+		vid.captions[idx] = caption;
+	};
 </script>
 
 <div>
 	<RangeSlider
 		min={Math.max(0, caption.startTime - range_err)}
-		max={Math.min(video_duration, caption.endTime + range_err)}
+		max={Math.min(vid.duration ?? 0, caption.endTime + range_err)}
 		step={3}
 		bind:values={range}
 		range
@@ -34,6 +32,7 @@
 		<div>{range[0]}</div>
 		<div>{range[1]}</div>
 	</div>
+	<button on:click={saveRange}> Save </button>
 </div>
 
 <style>
