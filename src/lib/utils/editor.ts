@@ -31,8 +31,15 @@ export class Editor {
     }
 
     next() {
-        if (this._currentIdx < this._captions.length - 1) {
+        if (this._currentIdx < this._captions.length) {
             this._currentIdx += 1;
+            while (this._currentIdx < this._captions.length) {
+                if (this._captions[this._currentIdx].score > 0.8) {
+                    this._currentIdx += 1;
+                } else {
+                    break;
+                }
+            }
         }
         for (const fn of this._navigationListeners) {
             fn(this._currentIdx);
@@ -42,6 +49,13 @@ export class Editor {
     previous() {
         if (this._currentIdx > 0) {
             this._currentIdx -= 1;
+            while (this._currentIdx < this._captions.length) {
+                if (this._captions[this._currentIdx].score > 0.8) {
+                    this._currentIdx -= 1;
+                } else {
+                    break;
+                }
+            }
         }
         for (const fn of this._navigationListeners) {
             fn(this._currentIdx);

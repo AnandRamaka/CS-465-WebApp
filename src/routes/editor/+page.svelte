@@ -2,16 +2,17 @@
 	import CaptionedVideo from '$lib/components/CaptionedVideo.svelte';
 	import CaptionsPane from '$lib/components/CaptionsPane.svelte';
 	import SettingsMenu from '$lib/components/SettingsMenu.svelte';
-	import { Caption, type SerializedCaption } from '$lib/utils/captions';
+	import { Caption } from '$lib/utils/captions';
 	import { Editor } from '$lib/utils/editor';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	const captions = Caption.deserializeCaptions(data.captions);
-	const editor = new Editor(captions);
-
 	let settings: { [key: string]: any } = {};
+
+	const captions = Caption.deserializeCaptions(data.captions, settings);
+
+	const editor = new Editor(captions);
 
 	function handleSettingsChange(updatedSettings: { [key: string]: any }) {
 		settings = updatedSettings.detail;
