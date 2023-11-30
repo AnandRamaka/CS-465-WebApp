@@ -1,3 +1,5 @@
+<!-- SettingsMenu.svelte -->
+
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 
@@ -7,7 +9,8 @@
 		mediumAccuracyThreshold: 0.7,
 		lowAccuracyThreshold: 0.5,
 		advancedMode: false,
-		enableSpeakerNames: false
+		enableSpeakerNames: false,
+		lightTheme: false // Add the light theme toggle
 	};
 
 	const dispatch = createEventDispatcher();
@@ -33,7 +36,9 @@
 			{#each Object.entries(settings) as [setting, value]}
 				<div class="setting-item">
 					<label for={setting}>{setting}</label>
-					{#if typeof value === 'boolean'}
+					{#if setting === 'lightTheme'}
+						<input type="checkbox" bind:checked={settings[setting]} on:change={updateSetting} />
+					{:else if typeof value === 'boolean'}
 						<input type="checkbox" bind:checked={settings[setting]} on:change={updateSetting} />
 					{:else if typeof value === 'string'}
 						<input type="text" bind:value={settings[setting]} on:blur={updateSetting} />

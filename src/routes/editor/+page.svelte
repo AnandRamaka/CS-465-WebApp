@@ -16,6 +16,15 @@
 	function handleSettingsChange(updatedSettings: { [key: string]: any }) {
 		settings = updatedSettings.detail;
 		editor.setUncertaintyThreshold(settings['mediumAccuracyThreshold']);
+		const lightTheme = settings.lightTheme;
+		if (lightTheme) {
+			document.documentElement.style.setProperty('--color-bg-1', '#eff8ff'); // Light background color
+			document.documentElement.style.setProperty('--color-fg-1', '#333333'); // Dark text color
+		} else {
+			// Reset to default theme styles
+			document.documentElement.style.removeProperty('--color-bg-1');
+			document.documentElement.style.removeProperty('--color-fg-1');
+		}
 	}
 
 	let mouseSplitterDistance: number;

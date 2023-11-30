@@ -14,12 +14,32 @@
 
 	let video: HTMLVideoElement;
 
+	let totalCaptions=0;
+	let remainingCaptions=0;
+	let currentPos=0;
+
+	function getRemainingCaptions(editor: Editor) {
+		totalCaptions = editor.captions.length;
+		remainingCaptions = totalCaptions - editor.currentIdx;
+  	}
+
+	function getCaptionPosition(editor: Editor) {
+		currentPos=editor.currentIdx;
+  	}
+
+	editor.addNavigationListener(() => {
+		getRemainingCaptions(editor);
+		getCaptionPosition(editor);
+	});
+
 	onMount(() => {
 		const track = video.addTextTrack('captions', 'Captions', 'en');
 		track.mode = 'showing';
 		for (const caption of editor.captions) {
 			track.addCue(caption.vttCue);
 		}
+		getRemainingCaptions(editor);
+		getCaptionPosition(editor);
 	});
 </script>
 
@@ -38,14 +58,14 @@
 		<track kind="captions" />
 	</video>
 	<div class="statistics-container">
-		<div class="statistics-box">
-			<p class="statistics-label">Remaining Captions:</p>
-			<p class="statistics-count">75</p>
-		</div>
-		<div class="statistics-box">
-			<p class="statistics-label">Edited Captions:</p>
-			<p class="statistics-count">0</p>
-		</div>
+			<div class="statistics-box">
+				<p class="statistics-label">Remaining Captions:</p>
+				<p class="statistics-count">{remainingCaptions}</p>
+			</div>
+			<div class="statistics-box">
+				<p class="statistics-label">You are at Caption:</p>
+				<p class="statistics-count">{currentPos}</p>
+			</div>
 	</div>
 </div>
 
