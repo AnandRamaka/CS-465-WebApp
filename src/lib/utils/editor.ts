@@ -6,6 +6,7 @@ export class Editor {
     private _captions: Caption[];
     private _currentIdx: number;
     private _navigationListeners: ((currentIdx: number) => void)[];
+    private _advancedMode: boolean;
     private _uncertaintyThreshold: number;
 
     public constructor(captions: Caption[]) {
@@ -13,6 +14,7 @@ export class Editor {
         this._captions = captions;
         this._currentIdx = 0;
         this._navigationListeners = [];
+        this._advancedMode = false;
         this._uncertaintyThreshold = 0.7;
     }
 
@@ -35,7 +37,7 @@ export class Editor {
     next() {
         while (this._currentIdx < this._captions.length - 1) {
             this._currentIdx += 1;
-            if (this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
+            if (this._advancedMode || this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
                 break;
             }
         }
@@ -47,7 +49,7 @@ export class Editor {
     previous() {
         while (this._currentIdx > 0) {
             this._currentIdx -= 1;
-            if (this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
+            if (this._advancedMode || this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
                 break;
             }
         }
@@ -62,6 +64,10 @@ export class Editor {
 
     setCaption(caption: Caption, idx: number): void {
         this._captions[idx] = caption;
+    }
+
+    setAdvancedMode(advancedMode: boolean): void {
+        this._advancedMode = advancedMode;
     }
 
     setUncertaintyThreshold(uncertaintyThreshold: number): void {
