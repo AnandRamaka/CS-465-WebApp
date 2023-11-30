@@ -11,11 +11,11 @@
 	let settings: { [key: string]: any } = {};
 
 	const captions = Caption.deserializeCaptions(data.captions);
-	const editor = new Editor(captions, settings);
+	const editor = new Editor(captions);
 
 	function handleSettingsChange(updatedSettings: { [key: string]: any }) {
 		settings = updatedSettings.detail;
-		editor.setSettings(settings);
+		editor.setUncertaintyThreshold(settings['mediumAccuracyThreshold']);
 	}
 
 	let mouseSplitterDistance: number;

@@ -6,14 +6,14 @@ export class Editor {
     private _captions: Caption[];
     private _currentIdx: number;
     private _navigationListeners: ((currentIdx: number) => void)[];
-    private _settings: { [key: string]: any } = {};;
+    private _uncertaintyThreshold: number;
 
-    public constructor(captions: Caption[], settings: { [key: string]: any }) {
+    public constructor(captions: Caption[]) {
         this._video = new VideoController();
         this._captions = captions;
         this._currentIdx = 0;
         this._navigationListeners = [];
-        this._settings = settings;
+        this._uncertaintyThreshold = 0.7;
     }
 
     get video(): VideoController {
@@ -32,14 +32,10 @@ export class Editor {
         return this._captions[this._currentIdx];
     }
 
-    get settings(): { [key: string]: any } {
-        return this._settings;
-    }
-
     next() {
         while (this._currentIdx < this._captions.length - 1) {
             this._currentIdx += 1;
-            if (this._captions[this._currentIdx].score <= this._settings['mediumAccuracyThreshold']) {
+            if (this._captions[this._currentIdx].score <= this._uncertaintyThreshold) {
                 break;
             }
         }
@@ -51,7 +47,7 @@ export class Editor {
     previous() {
         while (this._currentIdx > 0) {
             this._currentIdx -= 1;
-            if (this._captions[this._currentIdx].score <= this._settings['mediumAccuracyThreshold']) {
+            if (this._captions[this._currentIdx].score <= this._uncertaintyThreshold) {
                 break;
             } 
         }
@@ -68,7 +64,7 @@ export class Editor {
         this._captions[idx] = caption;
     }
 
-    setSettings(settings: { [key: string]: any }): void {
-        this._settings = settings;
+    setUncertaintyThreshold(uncertaintyThreshold: number): void {
+        this._uncertaintyThreshold = uncertaintyThreshold;
     }
 }
