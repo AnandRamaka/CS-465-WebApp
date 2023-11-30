@@ -128,22 +128,16 @@ export class Caption {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static deserializeCaptions(serialized: SerializedCaption[], settings: { [key: string]: any }): Caption[] {
+    static deserializeCaptions(serialized: SerializedCaption[]): Caption[] {
         const captions: Caption[] = [];
         let lastCaption: Caption | null = null;
         for (const item of serialized) {
             const caption = new Caption(item);
             if (lastCaption != null) {
-                // TODO: make this dynamic & have it change when user settings change
-                if (caption.score <= 0.8) {
-                    caption._previous = lastCaption;
-                    lastCaption._next = caption;
-                }
+                caption._previous = lastCaption;
+                lastCaption._next = caption;
             }
-            if (caption.score <= 0.8) {
-                lastCaption = caption;
-            }
+            lastCaption = caption;
             captions.push(caption);
         }
         return captions;
