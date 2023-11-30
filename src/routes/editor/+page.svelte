@@ -16,6 +16,7 @@
 	function handleSettingsChange(updatedSettings: { [key: string]: any }) {
 		settings = updatedSettings.detail;
 		editor.setUncertaintyThreshold(settings['mediumAccuracyThreshold']);
+
 		const lightTheme = settings.lightTheme;
 		if (lightTheme) {
 			document.documentElement.style.setProperty('--color-bg-1', '#eff8ff'); // Light background color

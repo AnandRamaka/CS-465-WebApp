@@ -35,7 +35,7 @@ export class Editor {
     next() {
         while (this._currentIdx < this._captions.length - 1) {
             this._currentIdx += 1;
-            if (this._captions[this._currentIdx].score <= this._uncertaintyThreshold) {
+            if (this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
                 break;
             }
         }
@@ -47,7 +47,7 @@ export class Editor {
     previous() {
         while (this._currentIdx > 0) {
             this._currentIdx -= 1;
-            if (this._captions[this._currentIdx].score <= this._uncertaintyThreshold) {
+            if (this._captions[this._currentIdx].score < this._uncertaintyThreshold) {
                 break;
             } 
         }
